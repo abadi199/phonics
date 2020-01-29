@@ -1,0 +1,51 @@
+@import "./styles/reset.scss";
+
+.app {
+  font-family: Arial, Helvetica, sans-serif;
+
+  .phonemes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid blue;
+  }
+
+  .phoneme {
+    background-color: red;
+    width: 200px;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
+  }
+
+  .edit {
+    display: grid;
+    height: 100%;
+    width: 100%;
+    grid-template-rows: calc(100vh - 50px) 50px;
+  }
+
+  .phoneme-selector {
+    display: grid;
+    grid-row-gap: 10px;
+    position: relative;
+    .phoneme {
+      margin: 10px 10px;
+    }
+    .after {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      top: 100%;
+      .phoneme {
+        margin: 10px 10px;
+      }
+    }
+  }
+
+  .view {
+    display: grid;
+  }
+}
