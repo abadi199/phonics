@@ -19,6 +19,7 @@ jobs:
       run: npm run build
     - name: Publish
       uses: maxheld83/ghpages@v0.2.1
-      secrets: GH_PAT
+      with: 
+        secrets: "GH_PAT"
       env:
         BUILD_DIR: "dist/"
