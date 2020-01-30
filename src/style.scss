@@ -81,8 +81,8 @@
     display: grid;
     position: relative;
     .phoneme {
-      width: 200px;
-      height: 300px;
+      width: 100px;
+      height: 150px;
       margin: 10px 10px;
       border-top-width: 20px;
     }
@@ -117,10 +117,10 @@
   .view {
     .phoneme {
       border-top-width: 40px;
-      margin: 0 40px;
-      width: 400px;
-      height: 600px;
-      font-size: 300px;
+      margin: 0 20px;
+      width: 200px;
+      height: 300px;
+      font-size: 250px;
     }
   }
 }
