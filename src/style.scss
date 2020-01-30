@@ -1,51 +1,126 @@
 @import "./styles/reset.scss";
 
 .app {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Quicksand", Arial, Helvetica, sans-serif;
+  background-color: rgba(0, 0, 0, 0.125);
+
+  button {
+    border: none;
+    background: #a2a2a2;
+    border-radius: 5px;
+    // box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  }
+  .view-button,
+  .edit-button {
+    font-size: 20px;
+    width: 100px;
+    height: 50px;
+  }
+
+  .add-phoneme,
+  .remove-phoneme {
+    font-size: 40px;
+    margin: 10px;
+    width: 50px;
+    height: 50px;
+  }
 
   .phonemes {
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid blue;
+    overflow: hidden;
   }
 
   .phoneme {
-    background-color: red;
-    width: 200px;
-    height: 300px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    background-color: rgba(255, 255, 255, 1);
+    border-radius: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 80px;
+    font-size: 100px;
+    cursor: pointer;
+    border-top-style: solid;
+
+    &.orange {
+      border-top-color: #ffa229;
+    }
+    &.purple {
+      border-top-color: #d4a3ff;
+    }
+    &.yellow {
+      border-top-color: #ffff7b;
+    }
+    &.grey {
+      border-top-color: #a2a2a2;
+    }
+    &.pink {
+      border-top-color: #ffc5ff;
+    }
+    &.blue {
+      border-top-color: #c4e7ff;
+    }
   }
 
-  .edit {
+  .edit,
+  .view {
     display: grid;
     height: 100%;
     width: 100%;
-    grid-template-rows: calc(100vh - 50px) 50px;
+    grid-template-rows: 100vh;
+    .edit-button,
+    .view-button {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+    }
   }
 
   .phoneme-selector {
     display: grid;
-    grid-row-gap: 10px;
     position: relative;
     .phoneme {
+      width: 200px;
+      height: 300px;
       margin: 10px 10px;
+      border-top-width: 20px;
+    }
+    .selected {
+      background: rgba(0, 0, 0, 0.15);
+    }
+    .before,
+    .after {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      align-items: center;
+      .phoneme {
+        border-top-width: 10px;
+        margin: 0 40px;
+        width: 100px;
+        height: 150px;
+        font-size: 50px;
+        margin: 10px 10px;
+      }
+    }
+    .before {
+      position: absolute;
+      bottom: 100%;
     }
     .after {
       position: absolute;
-      display: flex;
-      flex-direction: column;
       top: 100%;
-      .phoneme {
-        margin: 10px 10px;
-      }
     }
   }
 
   .view {
-    display: grid;
+    .phoneme {
+      border-top-width: 40px;
+      margin: 0 40px;
+      width: 400px;
+      height: 600px;
+      font-size: 300px;
+    }
   }
 }

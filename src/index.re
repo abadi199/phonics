@@ -1,1 +1,1 @@
-ReactDOMRe.renderToElementWithId(<PhonicsApp />, "app");
+ReactDOMRe.renderToElementWithId(<PhonicsApp />, "app"); 

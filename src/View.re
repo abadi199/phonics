@@ -4,10 +4,35 @@ type state = {phonemes: list(phoneme)};
 
 let str = React.string;
 
+type action =
+  | NoOp;
+
+let reducer = (state, action) => {
+  switch (action) {
+  | NoOp => state
+  };
+};
+
 [@react.component]
-let make = (~editButtonClicked) => {
+let make = (~dispatch, ~state, ~onEditButtonClicked) => {
+  module ViewPhonemes = {
+    [@react.component]
+    let make = (~phonemes) => {
+      <div className="phonemes">
+        {phonemes
+         |> List.mapi((index, phoneme) =>
+              <Phoneme phoneme key={string_of_int(index)} />
+            )
+         |> Array.of_list
+         |> React.array}
+      </div>;
+    };
+  };
+
   <div className="view">
-    {str("View 2.0")}
-    <button onClick={_evt => editButtonClicked()}> {str("Edit")} </button>
+    <ViewPhonemes phonemes={state.phonemes} />
+    <button className="view-button" onClick={_evt => onEditButtonClicked()}>
+      {str("Edit")}
+    </button>
   </div>;
 };

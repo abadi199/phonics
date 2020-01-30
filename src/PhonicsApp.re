@@ -1,43 +1,62 @@
-type mode =
+open Phoneme;
+
+type state =
   | Edit(Edit.state)
   | View(View.state);
 
-type state = {mode};
-
 type action =
-  | EditClicked
-  | ViewClicked;
+  | EditAction(Edit.action)
+  | ViewAction(View.action)
+  | ViewClicked
+  | EditClicked;
 
 let str = React.string;
 
-let toEdit = (mode: mode): mode =>
-  switch (mode) {
-  | Edit(_) => mode
-  | View(viewState) => Edit({phonemes: viewState.phonemes})
-  };
-
-let toView = (mode: mode): mode =>
-  switch (mode) {
+let toView = (state: state) => {
+  switch (state) {
   | Edit(editState) => View({phonemes: editState.phonemes})
-  | View(_) => mode
+  | View(_) => state
   };
+};
+
+let toEdit = (state: state) => {
+  switch (state) {
+  | View(viewState) => Edit({phonemes: viewState.phonemes})
+  | Edit(_) => state
+  };
+};
 
 [@react.component]
 let make = () => {
-  let ({mode}, dispatch) =
+  let (state, dispatch) =
     React.useReducer(
       (state, action) => {
-        switch (action) {
-        | EditClicked => {mode: toEdit(state.mode)}
-        | ViewClicked => {mode: toView(state.mode)}
+        switch (action, state) {
+        | (EditAction(editAction), Edit(editState)) =>
+          Edit(Edit.reducer(editState, editAction))
+        | (ViewAction(viewAction), View(viewState)) =>
+          View(View.reducer(viewState, viewAction))
+        | (ViewClicked, _) => toView(state)
+        | (EditClicked, _) => toEdit(state)
+        | _ => state
         }
       },
-      {mode: Edit(Edit.initialState)},
+      Edit(Edit.initialState),
     );
   <div className="app">
-    {switch (mode) {
-     | Edit(_) => <Edit viewButtonClicked={() => dispatch(ViewClicked)} />
-     | View(_) => <View editButtonClicked={() => dispatch(EditClicked)} />
+    {switch (state) {
+     | Edit(editState) =>
+       <Edit
+         state=editState
+         dispatch={editAction => dispatch(EditAction(editAction))}
+         onViewButtonClicked={() => dispatch(ViewClicked)}
+       />
+     | View(viewState) =>
+       <View
+         state=viewState
+         dispatch={viewAction => dispatch(ViewAction(viewAction))}
+         onEditButtonClicked={() => dispatch(EditClicked)}
+       />
      }}
   </div>;
 };

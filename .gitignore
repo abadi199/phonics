@@ -1,4 +1,5 @@
 lib/bs
+lib/js
 node_modules/
 dist
 .cache
