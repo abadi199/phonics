@@ -1,8 +1,10 @@
 @import "./styles/reset.scss";
 
+html {
+  background-color: #dfdfdf;
+}
 .app {
   font-family: "Quicksand", Arial, Helvetica, sans-serif;
-  background-color: rgba(0, 0, 0, 0.125);
 
   button {
     border: none;

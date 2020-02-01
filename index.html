@@ -1,5 +1,8 @@
 <html>
   <head>
+    <meta name="theme-color" content="#dfdfdf">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" href="/images/icons-512.png">
     <link rel="manifest" href="/manifest.webmanifest" />
     <link
       href="https://fonts.googleapis.com/css?family=Quicksand&display=swap"
@@ -8,8 +11,11 @@
     <link rel="stylesheet" href="/src/style.scss" />
   </head>
   <body>
+    <noscript>
+      <h1>Please enable JavaScript to use Phonics app.</h1>
+    </noscript>
     <div id="app"></div>
-    <script src="/src/index.re"></script> 
+    <script src="/src/index.re"></script>
     <script>
 		if ('serviceWorker' in navigator) {
       const sw = "sw.js";
@@ -23,4 +29,3 @@
 		}
   	</script>
 </html>
- 

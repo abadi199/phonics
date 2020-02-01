@@ -13,9 +13,9 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": "/phonics",
+  "start_url": "/phonics/",
   "background_color": "#DFDFDF",
   "display": "standalone",
   "orientation": "landscape",
-  "theme_color": "#FFA229"
+  "theme_color": "#DFDFDF"
 }
