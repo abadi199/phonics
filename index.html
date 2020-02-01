@@ -1,12 +1,26 @@
 <html>
-  <body>
-    <div id="app"></div>
-    <script src="./src/index.re"></script>
-    <link rel="manifest" href="./manifest.webmanifest" />
+  <head>
+    <link rel="manifest" href="/manifest.webmanifest" />
     <link
       href="https://fonts.googleapis.com/css?family=Quicksand&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./src/style.scss" />
-  </body>
+    <link rel="stylesheet" href="/src/style.scss" />
+  </head>
+  <body>
+    <div id="app"></div>
+    <script src="/src/index.re"></script> 
+    <script>
+		if ('serviceWorker' in navigator) {
+      const sw = "sw.js";
+			navigator.serviceWorker.register(sw)
+				.then(function(registration) {
+					console.log('Registration successful, scope is:', registration.scope);
+				})
+				.catch(function(error) {
+					console.log('Service worker registration failed, error:', error);
+				});
+		}
+  	</script>
 </html>
+ 

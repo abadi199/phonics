@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "parcel index.html",
-    "build": "parcel build index.html --public-url /phonics/",
+    "prod": "cd dist && python3 -m http.server",
+    "build": "parcel build index.html --public-url .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -14,9 +15,11 @@
     "bs-platform": "^7.0.1",
     "bsb-js": "^1.1.7",
     "parcel-bundler": "^1.12.4",
+    "parcel-plugin-sw-cache": "^0.3.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "reason-react": "^0.7.0",
     "sass": "^1.25.0"
-  }
+  },
+  "cache": {}
 }
