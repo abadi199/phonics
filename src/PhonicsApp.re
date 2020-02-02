@@ -21,7 +21,7 @@ let toView = (state: state) => {
 
 let toEdit = (state: state) => {
   switch (state) {
-  | View(viewState) => Edit({phonemes: viewState.phonemes})
+  | View(viewState) => Edit({activeIndex: 0, phonemes: viewState.phonemes})
   | Edit(_) => state
   };
 };

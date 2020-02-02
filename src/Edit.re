@@ -1,55 +1,24 @@
 open Phoneme;
 
-type state = {phonemes: list(phoneme)};
+type state = {
+  phonemes: list(phoneme),
+  activeIndex: int,
+};
 
-let initialState = {phonemes: [firstPhoneme]};
+let initialState = {phonemes: [firstPhoneme], activeIndex: 0};
 
 let str = React.string;
 
 type action =
   | AddPhoneme
   | RemovePhoneme
-  | PhonemeClicked(int, phoneme);
+  | PhonemeClicked(int, phoneme)
+  | SetActive(int)
+  | SelectionClicked(phoneme);
 
 type accumulator('a) = {
   list: list('a),
   found: bool,
-};
-
-let findAfter = (element: 'a, list: list('a)): list('a) => {
-  let result: accumulator('a) =
-    List.fold_right(
-      (current: 'a, accumulator: accumulator('a)) =>
-        if (current == element) {
-          {...accumulator, found: true};
-        } else if (accumulator.found) {
-          accumulator;
-        } else {
-          {...accumulator, list: [current, ...accumulator.list]};
-        },
-      list,
-      {list: [], found: false},
-    );
-
-  result.list;
-};
-
-let findBefore = (element: 'a, list: list('a)): list('a) => {
-  let result: accumulator('a) =
-    List.fold_left(
-      (accumulator: accumulator('a), current: 'a) =>
-        if (current.sound === element.sound) {
-          {...accumulator, found: true};
-        } else if (accumulator.found) {
-          accumulator;
-        } else {
-          {...accumulator, list: [current, ...accumulator.list]};
-        },
-      {list: [], found: false},
-      list,
-    );
-
-  result.list |> List.rev;
 };
 
 let selectPhoneme = (index, phoneme, list) =>
@@ -57,53 +26,43 @@ let selectPhoneme = (index, phoneme, list) =>
 
 let reducer = (state, action) => {
   switch (action) {
-  | AddPhoneme => {phonemes: state.phonemes @ [firstPhoneme]}
-  | RemovePhoneme => {
-      phonemes: state.phonemes |> List.rev |> List.tl |> List.rev,
+  | AddPhoneme => {...state, phonemes: state.phonemes @ [firstPhoneme]}
+  | RemovePhoneme =>
+    if (List.length(state.phonemes) > 1) {
+      let newPhonemes = state.phonemes |> List.rev |> List.tl |> List.rev;
+      let length = List.length(newPhonemes);
+      {
+        phonemes: newPhonemes,
+        activeIndex:
+          List.length(newPhonemes) > state.activeIndex
+            ? state.activeIndex : length - 1,
+      };
+    } else {
+      state;
     }
   | PhonemeClicked(index, phoneme) => {
+      ...state,
       phonemes: selectPhoneme(index, phoneme, state.phonemes),
+    }
+  | SetActive(index) => {...state, activeIndex: index}
+  | SelectionClicked(clickedPhoneme) => {
+      ...state,
+      phonemes:
+        state.phonemes
+        |> List.mapi((index, phoneme) => {
+             index == state.activeIndex ? clickedPhoneme : phoneme
+           }),
     }
   };
 };
 
 [@react.component]
 let make = (~state, ~dispatch, ~onViewButtonClicked) => {
-  module PhonemeSelector = {
+  module SelectedPhoneme = {
     [@react.component]
-    let make = (~selectedPhoneme as phoneme, ~index) => {
-      let before: list(phoneme) = phonemes |> findBefore(phoneme);
-      let after: list(phoneme) = phonemes |> findAfter(phoneme);
-      <div className="phoneme-selector">
-        <div className="before">
-          {before
-           |> List.mapi((beforeIndex, beforePhoneme) =>
-                <Phoneme
-                  key={string_of_int(beforeIndex)}
-                  phoneme=beforePhoneme
-                  onClick={() =>
-                    dispatch(PhonemeClicked(index, beforePhoneme))
-                  }
-                />
-              )
-           |> Array.of_list
-           |> React.array}
-        </div>
-        <div className="selected"> <Phoneme phoneme /> </div>
-        <div className="after">
-          {after
-           |> List.mapi((afterIndex, afterPhoneme) =>
-                <Phoneme
-                  key={string_of_int(afterIndex)}
-                  phoneme=afterPhoneme
-                  onClick={() =>
-                    dispatch(PhonemeClicked(index, afterPhoneme))
-                  }
-                />
-              )
-           |> Array.of_list
-           |> React.array}
-        </div>
+    let make = (~selectedPhoneme as phoneme, ~active, ~onClick) => {
+      <div className={"selected" ++ (active ? " active" : "")}>
+        <Phoneme phoneme onClick />
       </div>;
     };
   };
@@ -111,34 +70,51 @@ let make = (~state, ~dispatch, ~onViewButtonClicked) => {
   module ViewPhonemes = {
     [@react.component]
     let make = (~phonemes: list(phoneme)) => {
-      <div className="phonemes">
-        {phonemes
-         |> List.mapi((index, selectedPhoneme) =>
-              <PhonemeSelector
-                selectedPhoneme
-                index
-                key={string_of_int(index)}
-              />
-            )
-         |> Array.of_list
-         |> React.array}
-        <button
-          className="remove-phoneme"
-          onClick={_evt => dispatch(RemovePhoneme)}>
-          {str("-")}
-        </button>
-        <button
-          className="add-phoneme" onClick={_evt => dispatch(AddPhoneme)}>
-          {str("+")}
-        </button>
-      </div>;
+      <>
+        <div className="phonemes">
+          {phonemes
+           |> List.mapi((index, selectedPhoneme) =>
+                <SelectedPhoneme
+                  selectedPhoneme
+                  active={index == state.activeIndex}
+                  key={string_of_int(index)}
+                  onClick={() => dispatch(SetActive(index))}
+                />
+              )
+           |> Array.of_list
+           |> React.array}
+          <button
+            className="remove-phoneme"
+            onClick={_evt => dispatch(RemovePhoneme)}>
+            {str("-")}
+          </button>
+          <button
+            className="add-phoneme" onClick={_evt => dispatch(AddPhoneme)}>
+            {str("+")}
+          </button>
+        </div>
+        <div className="selection">
+          {Phoneme.phonemes
+           |> List.mapi((index, phoneme) =>
+                <Phoneme
+                  phoneme
+                  key={string_of_int(index)}
+                  onClick={() => dispatch(SelectionClicked(phoneme))}
+                />
+              )
+           |> Array.of_list
+           |> React.array}
+        </div>
+      </>;
     };
   };
 
   <div className="edit">
     <ViewPhonemes phonemes={state.phonemes} />
-    <button className="edit-button" onClick={_evt => onViewButtonClicked()}>
-      {str("Play")}
-    </button>
+    <button
+      className="view-button"
+      onClick={_evt => onViewButtonClicked()}
+      title="Play"
+    />
   </div>;
 };

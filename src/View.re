@@ -31,8 +31,10 @@ let make = (~dispatch, ~state, ~onEditButtonClicked) => {
 
   <div className="view">
     <ViewPhonemes phonemes={state.phonemes} />
-    <button className="view-button" onClick={_evt => onEditButtonClicked()}>
-      {str("Edit")}
-    </button>
+    <button
+      className="edit-button"
+      onClick={_evt => onEditButtonClicked()}
+      title="Edit"
+    />
   </div>;
 };

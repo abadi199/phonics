@@ -14,15 +14,17 @@ html {
   }
   .view-button,
   .edit-button {
-    font-size: 20px;
-    width: 100px;
+    // background: rgba(223, 223, 223, 0.5);
+    font-size: 16px;
+    width: 50px;
     height: 50px;
   }
 
   .add-phoneme,
   .remove-phoneme {
-    font-size: 40px;
-    margin: 10px;
+    font-size: 20px;
+    margin-left: 10px;
+    margin-top: 10px;
     width: 50px;
     height: 50px;
   }
@@ -37,7 +39,6 @@ html {
   .phoneme {
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     background-color: rgba(255, 255, 255, 1);
-    border-radius: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -64,23 +65,64 @@ html {
     }
   }
 
-  .edit,
   .view {
     display: grid;
     height: 100%;
     width: 100%;
     grid-template-rows: 100vh;
-    .edit-button,
-    .view-button {
+    .edit-button {
+      background-color: transparent;
       position: absolute;
-      bottom: 20px;
-      right: 20px;
+      top: 10px;
+      right: 10px;
+      background-image: url("./icons/settings-24px.svg");
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0.5;
     }
   }
 
-  .phoneme-selector {
+  .edit {
     display: grid;
-    position: relative;
+    height: 100%;
+    width: 100%;
+    grid-template-rows: min-content 1fr;
+    .selection {
+      padding: 10px;
+      background: #bcbcbc;
+      display: flex;
+      flex-wrap: wrap;
+      overflow-y: auto;
+      align-items: flex-start;
+      justify-content: center;
+      align-content: flex-start;
+      .phoneme {
+        border-top-width: 20px;
+        border-radius: 15px;
+        width: 80px;
+        height: 100px;
+        margin: 10px;
+        font-size: 40px;
+      }
+    }
+    .view-button {
+      background-color: transparent;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-image: url("./icons/play_circle_filled-24px.svg");
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0.5;
+    }
+  }
+
+  .selected {
+    &.active {
+      background: #bcbcbc;
+    }
     .phoneme {
       border-top-width: 20px;
       border-radius: 15px;
@@ -89,37 +131,11 @@ html {
       margin: 10px 10px;
       font-size: 60px;
     }
-    .selected {
-      background: rgba(0, 0, 0, 0.15);
-    }
-    .before,
-    .after {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      align-items: center;
-      .phoneme {
-        border-top-width: 15px;
-        border-radius: 10px;
-        margin: 0 40px;
-        width: 80px;
-        height: 100px;
-        font-size: 40px;
-        margin: 10px 10px;
-      }
-    }
-    .before {
-      position: absolute;
-      bottom: 100%;
-    }
-    .after {
-      position: absolute;
-      top: 100%;
-    }
   }
 
   .view {
     .phoneme {
+      border-radius: 20px;
       border-top-width: 40px;
       margin: 0 20px;
       width: 250px;
