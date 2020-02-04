@@ -16,16 +16,4 @@
     </noscript>
     <div id="app"></div>
     <script src="/src/index.re"></script>
-    <script>
-		if ('serviceWorker' in navigator) {
-      const sw = "sw.js";
-			navigator.serviceWorker.register(sw)
-				.then(function(registration) {
-					console.log('Registration successful, scope is:', registration.scope);
-				})
-				.catch(function(error) {
-					console.log('Service worker registration failed, error:', error);
-				});
-		}
-  	</script>
 </html>

@@ -1,11 +1,22 @@
 open Phoneme;
 
+let storageKey = "phonemes";
+
+type drawer =
+  | PhonemeSelection
+  | SavedWords;
+
 type state = {
   phonemes: list(phoneme),
   activeIndex: int,
+  drawer,
 };
 
-let initialState = {phonemes: [firstPhoneme], activeIndex: 0};
+let initialState = {
+  phonemes: [firstPhoneme],
+  activeIndex: 0,
+  drawer: PhonemeSelection,
+};
 
 let str = React.string;
 
@@ -14,7 +25,9 @@ type action =
   | RemovePhoneme
   | PhonemeClicked(int, phoneme)
   | SetActive(int)
-  | SelectionClicked(phoneme);
+  | SelectionClicked(phoneme)
+  | LoadButtonClicked
+  | CloseSavedWordsClicked;
 
 type accumulator('a) = {
   list: list('a),
@@ -26,12 +39,17 @@ let selectPhoneme = (index, phoneme, list) =>
 
 let reducer = (state, action) => {
   switch (action) {
-  | AddPhoneme => {...state, phonemes: state.phonemes @ [firstPhoneme]}
+  | AddPhoneme => {
+      ...state,
+      activeIndex: List.length(state.phonemes),
+      phonemes: state.phonemes @ [firstPhoneme],
+    }
   | RemovePhoneme =>
     if (List.length(state.phonemes) > 1) {
       let newPhonemes = state.phonemes |> List.rev |> List.tl |> List.rev;
       let length = List.length(newPhonemes);
       {
+        ...state,
         phonemes: newPhonemes,
         activeIndex:
           List.length(newPhonemes) > state.activeIndex
@@ -53,6 +71,8 @@ let reducer = (state, action) => {
              index == state.activeIndex ? clickedPhoneme : phoneme
            }),
     }
+  | LoadButtonClicked => {...state, drawer: SavedWords}
+  | CloseSavedWordsClicked => {...state, drawer: PhonemeSelection}
   };
 };
 
@@ -63,6 +83,49 @@ let make = (~state, ~dispatch, ~onViewButtonClicked) => {
     let make = (~selectedPhoneme as phoneme, ~active, ~onClick) => {
       <div className={"selected" ++ (active ? " active" : "")}>
         <Phoneme phoneme onClick />
+      </div>;
+    };
+  };
+
+  module PhonemeSelection = {
+    [@react.component]
+    let make = () => {
+      <div className="selection">
+        {Phoneme.phonemes
+         |> List.mapi((index, phoneme) =>
+              <Phoneme
+                phoneme
+                key={string_of_int(index)}
+                onClick={() => dispatch(SelectionClicked(phoneme))}
+              />
+            )
+         |> Array.of_list
+         |> React.array}
+      </div>;
+    };
+  };
+
+  module SavedWords = {
+    [@react.component]
+    let make = () => {
+      let (savedWords, setSavedWords) = React.useState(() => "");
+      React.useEffect1(
+        () => {
+          setSavedWords(_ =>
+            Dom.Storage.getItem(storageKey, Dom.Storage.localStorage)
+            ->Belt.Option.getWithDefault("fail")
+          );
+          None;
+        },
+        [||],
+      );
+      <div className="saved-words">
+        {str(savedWords)}
+        <button
+          className="transparent-button close-button"
+          onClick={_evt => dispatch(CloseSavedWordsClicked)}
+          title="Close"
+        />
       </div>;
     };
   };
@@ -93,28 +156,36 @@ let make = (~state, ~dispatch, ~onViewButtonClicked) => {
             {str("+")}
           </button>
         </div>
-        <div className="selection">
-          {Phoneme.phonemes
-           |> List.mapi((index, phoneme) =>
-                <Phoneme
-                  phoneme
-                  key={string_of_int(index)}
-                  onClick={() => dispatch(SelectionClicked(phoneme))}
-                />
-              )
-           |> Array.of_list
-           |> React.array}
-        </div>
+        {switch (state.drawer) {
+         | PhonemeSelection => <PhonemeSelection />
+         | SavedWords => <SavedWords />
+         }}
       </>;
     };
   };
 
+  let save = () => {
+    Dom.Storage.setItem(storageKey, "test 123", Dom.Storage.localStorage);
+  };
+
   <div className="edit">
     <ViewPhonemes phonemes={state.phonemes} />
-    <button
-      className="view-button"
-      onClick={_evt => onViewButtonClicked()}
-      title="Play"
-    />
+    <div className="action">
+      <button
+        className="transparent-button view-button"
+        onClick={_evt => onViewButtonClicked()}
+        title="Play"
+      />
+      <button
+        className="transparent-button save-button"
+        onClick={_evt => save()}
+        title="Save"
+      />
+      <button
+        className="transparent-button load-button"
+        onClick={_evt => dispatch(LoadButtonClicked)}
+        title="Load"
+      />
+    </div>
   </div>;
 };

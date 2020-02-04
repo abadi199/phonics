@@ -1,5 +1,3 @@
-open Phoneme;
-
 type state =
   | Edit(Edit.state)
   | View(View.state);
@@ -21,7 +19,12 @@ let toView = (state: state) => {
 
 let toEdit = (state: state) => {
   switch (state) {
-  | View(viewState) => Edit({activeIndex: 0, phonemes: viewState.phonemes})
+  | View(viewState) =>
+    Edit({
+      activeIndex: 0,
+      phonemes: viewState.phonemes,
+      drawer: Edit.PhonemeSelection,
+    })
   | Edit(_) => state
   };
 };

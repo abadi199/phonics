@@ -13,6 +13,7 @@
   "license": "ISC",
   "devDependencies": {
     "bs-platform": "^7.0.1",
+    "bs-remotedata": "^2.0.1",
     "bsb-js": "^1.1.7",
     "parcel-bundler": "^1.12.4",
     "parcel-plugin-sw-cache": "^0.3.1",
