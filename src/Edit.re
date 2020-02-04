@@ -106,7 +106,7 @@ let make = (~state, ~dispatch, ~onViewButtonClicked) => {
   };
 
   module SavedWords = {
-    [@react.component]
+    [@react.component] 
     let make = () => {
       let (savedWords, setSavedWords) = React.useState(() => "");
       React.useEffect1(

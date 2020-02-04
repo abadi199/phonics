@@ -7,11 +7,12 @@
     "start": "parcel index.html",
     "build": "parcel build index.html --public-url .",
     "pwa": "rm -rf dist/phonics && npm run build && mkdir dist/phonics && mv dist/*.* dist/phonics && python3 -m http.server -d dist",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@glennsl/bs-jest": "^0.4.9",
     "bs-platform": "^7.0.1",
     "bs-remotedata": "^2.0.1",
     "bsb-js": "^1.1.7",
