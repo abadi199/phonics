@@ -1,25 +1,23 @@
 open Phoneme;
-
-let storageKey = "phonemes";
+open Word;
 
 type drawer =
   | PhonemeSelection
   | SavedWords;
 
 type state = {
-  phonemes: list(phoneme),
+  phonemes: word,
   activeIndex: int,
   drawer,
 };
 
 let initialState = {
-  phonemes: [firstPhoneme],
+  phonemes: [Phoneme.a],
   activeIndex: 0,
   drawer: PhonemeSelection,
 };
 
 let str = React.string;
-
 type action =
   | AddPhoneme
   | RemovePhoneme
@@ -27,7 +25,8 @@ type action =
   | SetActive(int)
   | SelectionClicked(phoneme)
   | LoadButtonClicked
-  | CloseSavedWordsClicked;
+  | CloseSavedWordsClicked
+  | LoadWord(word);
 
 type accumulator('a) = {
   list: list('a),
@@ -42,7 +41,7 @@ let reducer = (state, action) => {
   | AddPhoneme => {
       ...state,
       activeIndex: List.length(state.phonemes),
-      phonemes: state.phonemes @ [firstPhoneme],
+      phonemes: state.phonemes @ [Phoneme.a],
     }
   | RemovePhoneme =>
     if (List.length(state.phonemes) > 1) {
@@ -73,6 +72,7 @@ let reducer = (state, action) => {
     }
   | LoadButtonClicked => {...state, drawer: SavedWords}
   | CloseSavedWordsClicked => {...state, drawer: PhonemeSelection}
+  | LoadWord(word) => {...state, phonemes: word}
   };
 };
 
@@ -106,21 +106,40 @@ let make = (~state, ~dispatch, ~onViewButtonClicked) => {
   };
 
   module SavedWords = {
-    [@react.component] 
+    [@react.component]
     let make = () => {
-      let (savedWords, setSavedWords) = React.useState(() => "");
+      let (savedWords, setSavedWords) = React.useState(() => []);
+
+      let deleteWord = (word: Word.word) => {
+        let words = Storage.deleteWord(word);
+        Js.log(Storage.toString(words));
+        setSavedWords(_ => words);
+      };
+
+      let loadWord = (word: Word.word) => {
+        dispatch(LoadWord(word));
+        dispatch(CloseSavedWordsClicked);
+      };
+
       React.useEffect1(
         () => {
-          setSavedWords(_ =>
-            Dom.Storage.getItem(storageKey, Dom.Storage.localStorage)
-            ->Belt.Option.getWithDefault("fail")
-          );
+          setSavedWords(_ => Storage.loadWords());
           None;
         },
         [||],
       );
       <div className="saved-words">
-        {str(savedWords)}
+        {savedWords
+         |> List.map(word =>
+              <Word
+                word
+                key={Word.toString(word)}
+                onDeleteClicked={() => deleteWord(word)}
+                onClick={() => loadWord(word)}
+              />
+            )
+         |> Array.of_list
+         |> React.array}
         <button
           className="transparent-button close-button"
           onClick={_evt => dispatch(CloseSavedWordsClicked)}
@@ -156,36 +175,43 @@ let make = (~state, ~dispatch, ~onViewButtonClicked) => {
             {str("+")}
           </button>
         </div>
-        {switch (state.drawer) {
-         | PhonemeSelection => <PhonemeSelection />
-         | SavedWords => <SavedWords />
-         }}
+        <PhonemeSelection />
       </>;
     };
   };
 
-  let save = () => {
-    Dom.Storage.setItem(storageKey, "test 123", Dom.Storage.localStorage);
+  module ActionSection = {
+    let saveWord = () => {
+      Storage.saveWord(state.phonemes);
+    };
+
+    [@react.component]
+    let make = () => {
+      <div className="action">
+        <button
+          className="transparent-button view-button"
+          onClick={_evt => onViewButtonClicked()}
+          title="Play"
+        />
+        <button
+          className="transparent-button save-button"
+          onClick={_evt => saveWord()}
+          title="Save"
+        />
+        <button
+          className="transparent-button load-button"
+          onClick={_evt => dispatch(LoadButtonClicked)}
+          title="Load"
+        />
+      </div>;
+    };
   };
 
   <div className="edit">
-    <ViewPhonemes phonemes={state.phonemes} />
-    <div className="action">
-      <button
-        className="transparent-button view-button"
-        onClick={_evt => onViewButtonClicked()}
-        title="Play"
-      />
-      <button
-        className="transparent-button save-button"
-        onClick={_evt => save()}
-        title="Save"
-      />
-      <button
-        className="transparent-button load-button"
-        onClick={_evt => dispatch(LoadButtonClicked)}
-        title="Load"
-      />
-    </div>
+    {switch (state.drawer) {
+     | PhonemeSelection =>
+       <> <ViewPhonemes phonemes={state.phonemes} /> <ActionSection /> </>
+     | SavedWords => <SavedWords />
+     }}
   </div>;
 };
