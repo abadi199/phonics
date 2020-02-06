@@ -12,7 +12,7 @@ let str = React.string;
 
 let toView = (state: state) => {
   switch (state) {
-  | Edit(editState) => View({phonemes: editState.phonemes})
+  | Edit(editState) => View({word: editState.word})
   | View(_) => state
   };
 };
@@ -22,8 +22,8 @@ let toEdit = (state: state) => {
   | View(viewState) =>
     Edit({
       activeIndex: 0,
-      phonemes: viewState.phonemes,
-      drawer: Edit.PhonemeSelection,
+      word: viewState.word,
+      display: Edit.DisplayPhonemeSelection,
     })
   | Edit(_) => state
   };

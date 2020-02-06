@@ -35,7 +35,7 @@ html {
     height: 50px;
   }
 
-  .phonemes {
+  .word {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -164,26 +164,6 @@ html {
     }
   }
 
-  .word {
-    display: flex;
-    flex-direction: row;
-    .phoneme {
-      margin-right: 5px;
-    }
-    margin: 0 10px 20px;
-    border-radius: 10px;
-    padding: 10px;
-    background-color: #fff;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-    .delete-word-button {
-      height: 30px;
-      width: 30px;
-      background-image: url("./icons/close-24px.svg");
-      padding: 0px;
-      margin-left: 5px;
-    }
-  }
-
   .saved-words {
     padding: 50px;
     height: 100vh;
@@ -194,6 +174,26 @@ html {
     flex-wrap: wrap;
     align-content: flex-start;
     overflow: auto;
+
+    .word {
+      display: flex;
+      flex-direction: row;
+      .phoneme {
+        margin-right: 5px;
+      }
+      margin: 0 10px 20px;
+      border-radius: 10px;
+      padding: 10px;
+      background-color: #fff;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+      .delete-word-button {
+        height: 30px;
+        width: 30px;
+        background-image: url("./icons/close-24px.svg");
+        padding: 0px;
+        margin-left: 5px;
+      }
+    }
 
     .close-button {
       position: fixed;

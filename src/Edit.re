@@ -1,20 +1,20 @@
 open Phoneme;
 open Word;
 
-type drawer =
-  | PhonemeSelection
-  | SavedWords;
+type display =
+  | DisplayPhonemeSelection
+  | DisplaySavedWords;
 
 type state = {
-  phonemes: word,
+  word,
   activeIndex: int,
-  drawer,
+  display,
 };
 
 let initialState = {
-  phonemes: [Phoneme.a],
+  word: [Phoneme.a],
   activeIndex: 0,
-  drawer: PhonemeSelection,
+  display: DisplayPhonemeSelection,
 };
 
 let str = React.string;
@@ -40,16 +40,16 @@ let reducer = (state, action) => {
   switch (action) {
   | AddPhoneme => {
       ...state,
-      activeIndex: List.length(state.phonemes),
-      phonemes: state.phonemes @ [Phoneme.a],
+      activeIndex: List.length(state.word),
+      word: state.word @ [Phoneme.a],
     }
   | RemovePhoneme =>
-    if (List.length(state.phonemes) > 1) {
-      let newPhonemes = state.phonemes |> List.rev |> List.tl |> List.rev;
+    if (List.length(state.word) > 1) {
+      let newPhonemes = state.word |> List.rev |> List.tl |> List.rev;
       let length = List.length(newPhonemes);
       {
         ...state,
-        phonemes: newPhonemes,
+        word: newPhonemes,
         activeIndex:
           List.length(newPhonemes) > state.activeIndex
             ? state.activeIndex : length - 1,
@@ -59,20 +59,20 @@ let reducer = (state, action) => {
     }
   | PhonemeClicked(index, phoneme) => {
       ...state,
-      phonemes: selectPhoneme(index, phoneme, state.phonemes),
+      word: selectPhoneme(index, phoneme, state.word),
     }
   | SetActive(index) => {...state, activeIndex: index}
   | SelectionClicked(clickedPhoneme) => {
       ...state,
-      phonemes:
-        state.phonemes
+      word:
+        state.word
         |> List.mapi((index, phoneme) => {
              index == state.activeIndex ? clickedPhoneme : phoneme
            }),
     }
-  | LoadButtonClicked => {...state, drawer: SavedWords}
-  | CloseSavedWordsClicked => {...state, drawer: PhonemeSelection}
-  | LoadWord(word) => {...state, phonemes: word}
+  | LoadButtonClicked => {...state, display: DisplaySavedWords}
+  | CloseSavedWordsClicked => {...state, display: DisplayPhonemeSelection}
+  | LoadWord(word) => {...state, word}
   };
 };
 
@@ -105,56 +105,12 @@ let make = (~state, ~dispatch, ~onViewButtonClicked) => {
     };
   };
 
-  module SavedWords = {
+  module ViewWord = {
     [@react.component]
-    let make = () => {
-      let (savedWords, setSavedWords) = React.useState(() => []);
-
-      let deleteWord = (word: Word.word) => {
-        let words = Storage.deleteWord(word);
-        Js.log(Storage.toString(words));
-        setSavedWords(_ => words);
-      };
-
-      let loadWord = (word: Word.word) => {
-        dispatch(LoadWord(word));
-        dispatch(CloseSavedWordsClicked);
-      };
-
-      React.useEffect1(
-        () => {
-          setSavedWords(_ => Storage.loadWords());
-          None;
-        },
-        [||],
-      );
-      <div className="saved-words">
-        {savedWords
-         |> List.map(word =>
-              <Word
-                word
-                key={Word.toString(word)}
-                onDeleteClicked={() => deleteWord(word)}
-                onClick={() => loadWord(word)}
-              />
-            )
-         |> Array.of_list
-         |> React.array}
-        <button
-          className="transparent-button close-button"
-          onClick={_evt => dispatch(CloseSavedWordsClicked)}
-          title="Close"
-        />
-      </div>;
-    };
-  };
-
-  module ViewPhonemes = {
-    [@react.component]
-    let make = (~phonemes: list(phoneme)) => {
+    let make = (~word: list(phoneme)) => {
       <>
-        <div className="phonemes">
-          {phonemes
+        <div className="word">
+          {word
            |> List.mapi((index, selectedPhoneme) =>
                 <SelectedPhoneme
                   selectedPhoneme
@@ -182,7 +138,7 @@ let make = (~state, ~dispatch, ~onViewButtonClicked) => {
 
   module ActionSection = {
     let saveWord = () => {
-      Storage.saveWord(state.phonemes);
+      Storage.saveWord(state.word);
     };
 
     [@react.component]
@@ -206,12 +162,20 @@ let make = (~state, ~dispatch, ~onViewButtonClicked) => {
       </div>;
     };
   };
+  let loadWord = (word: word) => {
+    dispatch(LoadWord(word));
+    dispatch(CloseSavedWordsClicked);
+  };
 
   <div className="edit">
-    {switch (state.drawer) {
-     | PhonemeSelection =>
-       <> <ViewPhonemes phonemes={state.phonemes} /> <ActionSection /> </>
-     | SavedWords => <SavedWords />
+    {switch (state.display) {
+     | DisplayPhonemeSelection =>
+       <> <ViewWord word={state.word} /> <ActionSection /> </>
+     | DisplaySavedWords =>
+       <SavedWords
+         onWordClicked=loadWord
+         onCloseClicked={() => dispatch(CloseSavedWordsClicked)}
+       />
      }}
   </div>;
 };

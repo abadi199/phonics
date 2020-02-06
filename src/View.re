@@ -1,6 +1,6 @@
-open Phoneme;
+open Word;
 
-type state = {phonemes: list(phoneme)};
+type state = {word};
 
 let str = React.string;
 
@@ -15,11 +15,11 @@ let reducer = (state, action) => {
 
 [@react.component]
 let make = (~dispatch, ~state, ~onEditButtonClicked) => {
-  module ViewPhonemes = {
+  module ViewWord = {
     [@react.component]
-    let make = (~phonemes) => {
-      <div className="phonemes">
-        {phonemes
+    let make = (~word) => {
+      <div className="word">
+        {word
          |> List.mapi((index, phoneme) =>
               <Phoneme phoneme key={string_of_int(index)} />
             )
@@ -30,7 +30,7 @@ let make = (~dispatch, ~state, ~onEditButtonClicked) => {
   };
 
   <div className="view">
-    <ViewPhonemes phonemes={state.phonemes} />
+    <ViewWord word={state.word} />
     <button
       className="transparent-button edit-button"
       onClick={_evt => onEditButtonClicked()}
