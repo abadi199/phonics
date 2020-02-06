@@ -77,15 +77,17 @@ html {
     }
   }
 
-  .view {
+  .play {
     display: grid;
     height: 100%;
     width: 100%;
     grid-template-rows: 100vh;
-    .edit-button {
+    .action {
       position: absolute;
       top: 10px;
       right: 10px;
+    }
+    .edit-button {
       background-image: url("./icons/settings-24px.svg");
       background-size: contain;
       background-position: center;
@@ -124,19 +126,19 @@ html {
       display: flex;
       flex-direction: column;
     }
+  }
 
-    .close-button {
-      background-image: url("./icons/close-24px.svg");
-    }
-    .save-button {
-      background-image: url("./icons/save-24px.svg");
-    }
-    .load-button {
-      background-image: url("./icons/folder_open-24px.svg");
-    }
-    .view-button {
-      background-image: url("./icons/play_circle_filled-24px.svg");
-    }
+  .close-button {
+    background-image: url("./icons/close-24px.svg");
+  }
+  .save-button {
+    background-image: url("./icons/save-24px.svg");
+  }
+  .load-button {
+    background-image: url("./icons/folder_open-24px.svg");
+  }
+  .view-button {
+    background-image: url("./icons/play_circle_filled-24px.svg");
   }
 
   .selected {
@@ -153,7 +155,7 @@ html {
     }
   }
 
-  .view {
+  .play {
     .phoneme {
       border-radius: 20px;
       border-top-width: 40px;
@@ -178,6 +180,7 @@ html {
     .word {
       display: flex;
       flex-direction: row;
+      align-items: flex-start;
       .phoneme {
         margin-right: 5px;
       }

@@ -12,7 +12,8 @@ let str = React.string;
 
 let toView = (state: state) => {
   switch (state) {
-  | Edit(editState) => View({word: editState.word})
+  | Edit(editState) =>
+    View({word: editState.word, display: View.DisplayPlay})
   | View(_) => state
   };
 };

@@ -1,15 +1,26 @@
 open Word;
 
-type state = {word};
+type display =
+  | DisplayPlay
+  | DisplaySavedWords;
+
+type state = {
+  word,
+  display,
+};
 
 let str = React.string;
 
 type action =
-  | NoOp;
+  | LoadWord(word)
+  | LoadButtonClicked
+  | CloseSavedWordsClicked;
 
 let reducer = (state, action) => {
   switch (action) {
-  | NoOp => state
+  | LoadWord(word) => {word, display: DisplayPlay}
+  | LoadButtonClicked => {...state, display: DisplaySavedWords}
+  | CloseSavedWordsClicked => {...state, display: DisplayPlay}
   };
 };
 
@@ -29,12 +40,34 @@ let make = (~dispatch, ~state, ~onEditButtonClicked) => {
     };
   };
 
-  <div className="view">
-    <ViewWord word={state.word} />
-    <button
-      className="transparent-button edit-button"
-      onClick={_evt => onEditButtonClicked()}
-      title="Edit"
+  module ActionSection = {
+    [@react.component]
+    let make = () => {
+      <div className="action">
+        <button
+          className="transparent-button load-button"
+          onClick={_evt => dispatch(LoadButtonClicked)}
+          title="Load"
+        />
+        <button
+          className="transparent-button edit-button"
+          onClick={_evt => onEditButtonClicked()}
+          title="Edit"
+        />
+      </div>;
+    };
+  };
+
+  switch (state.display) {
+  | DisplayPlay =>
+    <div className="play">
+      <ViewWord word={state.word} />
+      <ActionSection />
+    </div>
+  | DisplaySavedWords =>
+    <SavedWords
+      onWordClicked={(word: word) => dispatch(LoadWord(word))}
+      onCloseClicked={() => dispatch(CloseSavedWordsClicked)}
     />
-  </div>;
+  };
 };
