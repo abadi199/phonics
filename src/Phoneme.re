@@ -65,11 +65,12 @@ let pink: list(phoneme) = [r, j, v, y, w];
 let th = {sound: "th", image: "", color: Blue, side: Front};
 let z = {sound: "z", image: "", color: Blue, side: Front};
 let ch = {sound: "ch", image: "", color: Blue, side: Front};
+let ck = {sound: "ck", image: "", color: Blue, side: Front};
 let qu = {sound: "qu", image: "", color: Blue, side: Front};
 let x = {sound: "x", image: "", color: Blue, side: Front};
 let ng = {sound: "ng", image: "", color: Blue, side: Front};
 let nk = {sound: "nk", image: "", color: Blue, side: Front};
-let blue: list(phoneme) = [th, z, ch, qu, x, ng, nk];
+let blue: list(phoneme) = [th, z, ch, ck, qu, x, ng, nk];
 
 let phonemes: list(phoneme) = orange @ purple @ yellow @ grey @ pink @ blue;
 
