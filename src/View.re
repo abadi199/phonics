@@ -58,10 +58,50 @@ let make = (~dispatch, ~state, ~onEditButtonClicked) => {
     };
   };
 
+  module Navigation = {
+    let prevButtonClicked = _evt => {
+      let word = Storage.prevWord(state.word);
+      dispatch(LoadWord(word));
+    };
+
+    let shuffleButtonClicked = _evt => {
+      let word =
+        Storage.shuffleWord()->Belt.Option.getWithDefault(state.word);
+      dispatch(LoadWord(word));
+    };
+
+    let nextButtonClicked = _evt => {
+      let word = Storage.nextWord(state.word);
+      dispatch(LoadWord(word));
+    };
+
+    [@react.component]
+    let make = () => {
+      <div className="navigation">
+        <button
+          className="transparent-button prev-button"
+          title="Next"
+          onClick=prevButtonClicked
+        />
+        <button
+          className="transparent-button shuffle-button"
+          title="Next"
+          onClick=shuffleButtonClicked
+        />
+        <button
+          className="transparent-button next-button"
+          title="Next"
+          onClick=nextButtonClicked
+        />
+      </div>;
+    };
+  };
+
   switch (state.display) {
   | DisplayPlay =>
     <div className="play">
       <ViewWord word={state.word} />
+      <Navigation />
       <ActionSection />
     </div>
   | DisplaySavedWords =>

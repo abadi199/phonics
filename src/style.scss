@@ -144,6 +144,15 @@ html {
   .view-button {
     background-image: url("./icons/play_circle_filled-24px.svg");
   }
+  .next-button {
+    background-image: url("./icons/arrow_forward_ios-black-24dp.svg");
+  }
+  .prev-button {
+    background-image: url("./icons/arrow_back_ios-black-24dp.svg");
+  }
+  .shuffle-button {
+    background-image: url("./icons/shuffle-black-24dp.svg");
+  }
 
   .selected {
     &.active {
@@ -209,5 +218,14 @@ html {
       right: 5px;
       background-size: 40px;
     }
+  }
+
+  .navigation {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    position: fixed;
+    width: 100vw;
+    bottom: 0;
   }
 }

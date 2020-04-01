@@ -20,6 +20,28 @@ let fromString = (word: string): word => {
   |> List.flatten;
 };
 
+let rec findPrev: (list(word), word) => option(word) =
+  (words, word) => {
+    let wordStr = toString(word);
+    switch (words) {
+    | [] => None
+    | [_] => None
+    | [a, b, ..._rest] when toString(b) == wordStr => Some(a)
+    | [_, ...rest] => findPrev(rest, word)
+    };
+  };
+
+let rec findNext: (list(word), word) => option(word) =
+  (words, word) => {
+    let wordStr = toString(word);
+    switch (words) {
+    | [] => None
+    | [_] => None
+    | [a, b, ..._rest] when toString(a) == wordStr => Some(b)
+    | [_, ...rest] => findNext(rest, word)
+    };
+  };
+
 [@react.component]
 let make = (~word: word, ~onDeleteClicked=() => (), ~onClick=() => ()) => {
   <div className="word" onClick={_evt => onClick()}>

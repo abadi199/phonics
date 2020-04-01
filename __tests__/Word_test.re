@@ -8,8 +8,8 @@ describe("Word", () => {
       expect([m, a, t] |> Word.toString) |> toBe("m,a,t")
     );
 
-    test("toString(qu,i,c,k)", () =>
-      expect([qu, i, c, k] |> Word.toString) |> toBe("qu,i,c,k")
+    test("toString(qu,i,ck)", () =>
+      expect([qu, i, ck] |> Word.toString) |> toBe("qu,i,ck")
     );
   });
 
@@ -22,5 +22,29 @@ describe("Word", () => {
     test("fromString(\"qu,i,c,k\")", () =>
       expect("qu,i,c,k" |> Word.fromString) |> toEqual([qu, i, c, k])
     );
+  });
+
+  describe("findPrev", () => {
+    Expect.(
+      test("findPrev", () =>
+        expect(
+          Word.findPrev([[m, a, t], [qu, i, ck]], [qu, i, ck])
+          ->Belt.Option.map(Word.toString),
+        )
+        |> toEqual(Some("m,a,t"))
+      )
+    )
+  });
+
+  describe("findNext", () => {
+    Expect.(
+      test("findNext", () =>
+        expect(
+          Word.findNext([[m, a, t], [qu, i, ck]], [m, a, t])
+          ->Belt.Option.map(Word.toString),
+        )
+        |> toEqual(Some("qu,i,ck"))
+      )
+    )
   });
 });

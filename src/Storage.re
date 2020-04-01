@@ -75,3 +75,20 @@ let deleteWord: word => list(word) =
     Dom.Storage.setItem(storageKey, updatedWords, Dom.Storage.localStorage);
     loadWords();
   };
+
+let prevWord: word => word =
+  word => {
+    loadWords()->findPrev(word)->Belt.Option.getWithDefault(word);
+  };
+
+let nextWord: word => word =
+  word => {
+    loadWords()->findNext(word)->Belt.Option.getWithDefault(word);
+  };
+
+let shuffleWord: unit => option(word) =
+  () => {
+    let words = loadWords();
+    let randomIndex = Random.int(List.length(words));
+    List.nth_opt(words, randomIndex);
+  };
