@@ -109,6 +109,7 @@ let fromString = (sound: string): option(phoneme) => {
   | "x" => Some(x)
   | "ng" => Some(ng)
   | "nk" => Some(nk)
+  | "ck" => Some(ck)
   | _ => None
   };
 };

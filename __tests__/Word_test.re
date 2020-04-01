@@ -20,7 +20,7 @@ describe("Word", () => {
     );
 
     test("fromString(\"qu,i,c,k\")", () =>
-      expect("qu,i,c,k" |> Word.fromString) |> toEqual([qu, i, c, k])
+      expect("qu,i,ck" |> Word.fromString) |> toEqual([qu, i, ck])
     );
   });
 
