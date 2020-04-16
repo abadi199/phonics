@@ -5,3 +5,4 @@ dist
 .cache
 *.bs.js
 .merlin
+.DS_Store
