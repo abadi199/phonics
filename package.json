@@ -12,16 +12,16 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@glennsl/bs-jest": "^0.4.9",
-    "bs-platform": "^7.0.1",
+    "@glennsl/bs-jest": "^0.5.1",
+    "bs-platform": "^7.2.2",
     "bs-remotedata": "^2.0.1",
     "bsb-js": "^1.1.7",
     "parcel-bundler": "^1.12.4",
     "parcel-plugin-sw-cache": "^0.3.1",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
     "reason-react": "^0.7.0",
-    "sass": "^1.25.0"
+    "sass": "^1.26.3"
   },
   "cache": {
     "templatedURLs": {
